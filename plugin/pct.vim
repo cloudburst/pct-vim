@@ -510,6 +510,50 @@ def init_db(create=True):
 	else:
 		err("no db found!")
 
+def get_path(path, create=True):
+    """
+    The path _should_ be a string, but in case it's an instance of a Path ORM
+    object, just return it.
+
+    MAKE SURE THE PATH IS RELATIVE TO THE PROJECT ROOT!
+    """
+    if isinstance(path, PctModels.Path):
+        return path
+
+    # normalize the path
+    normd_path = norm_path(path)
+
+    try:
+        existing_path = PctModels.Path.get(PctModels.Path.path == normd_path)
+        return existing_path
+    except:
+        if create:
+            return add_path(path)
+        else:
+            return None
+
+def add_path(path):
+    """
+    """
+    # TODO - need to make sure all paths are relative to the database, else
+    # they won't be portable!
+    path = norm_path(path)
+
+    line_count=0
+    with open(os.path.join(os.path.dirname(DB.database), path)) as f:
+        data = f.read()
+        line_count = data.count("\n")
+        if data[-1] == "\n":
+            line_count -= 1
+
+    new_path = PctModels.Path(path=path, line_count=line_count)
+    new_path.save()
+
+    update_status(vim.current.buffer.name)
+
+    return new_path
+
+
 # ----------------------------------------------
 # ----------------------------------------------
 # ----------------------------------------------

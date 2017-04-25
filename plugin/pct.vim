@@ -1041,7 +1041,7 @@ def get_tag_notes():
 
 def show_file_signs(file=None):
 	if file is None:
-		file == get_file()
+		file = get_file()
 
 	if file.reviews.count() == 0 and file.notes.count() == 0 and file.threads.count() == 0:
 		return

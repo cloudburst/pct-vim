@@ -39,6 +39,8 @@ DB = None
 DB_PATH = None
 DB_NAME = "pct2.sqlite"
 
+SHOW_ANNOTATIONS = True
+
 def _input(message = 'input'):
 	try:
 		vim.command('call inputsave()')
